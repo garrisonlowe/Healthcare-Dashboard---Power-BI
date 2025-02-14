@@ -160,7 +160,7 @@ Hospitals and healthcare providers struggle with managing large volumes of patie
     
 2. Adding in more hospitals and giving them random weights.
     
-    ```
+    ```python
     # Adding in more hospitals and giving them random weights.
     hospitals = [
         "Riverside General Hospital", "Summit Medical Center", "Grandview Health System",
