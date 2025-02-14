@@ -1,4 +1,4 @@
-Check out the dashboard here!
+[Try out the Dashboard here!](https://app.powerbi.com/view?r=eyJrIjoiMGQ4ZjQ2N2QtZjZmYy00NDRlLTg4MTctYjgxNmU3MTRhOTEwIiwidCI6ImJkMGNhZWQyLTBiNTctNDllNy1hMjY2LTYzMWZhNmE2YzIyYSJ9)
 
 # Healthcare Data Analytics Dashboard
 
@@ -299,7 +299,7 @@ Hospitals and healthcare providers struggle with managing large volumes of patie
     df['Race'] = df['Name'].map(name_to_race)
     ```
     
-10.  Added more test results
+10. Added more test results
     
     ```python
     # Define possible test results and their weights
@@ -310,7 +310,7 @@ Hospitals and healthcare providers struggle with managing large volumes of patie
     df['Test Results'] = random.choices(test_results, weights=weights, k=len(df))
     ```
     
-11.  Added in an Outcomes column.
+11. Added in an Outcomes column.
     
     ```python
     #Adding in a patient outcome column
@@ -321,7 +321,7 @@ Hospitals and healthcare providers struggle with managing large volumes of patie
     df['Patient Outcome'] = random.choices(outcomes, weights=weights, k=len(df))
     ```
     
-12.  Adjusted the readmitted column
+12. Adjusted the readmitted column
     
     ```python
     # Changing readmitted column to say "Readmitted" or "Not Readmitted"
