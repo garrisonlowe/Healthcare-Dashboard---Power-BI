@@ -1,0 +1,214 @@
+DateTable = 
+ADDCOLUMNS(
+    CALENDAR(DATE(2019, 5, 9), DATE(2024, 6, 1)),
+    "Year", YEAR([Date]),
+    "Month Number", MONTH([Date]),
+    "Month Name", FORMAT([Date], "MMMM"),
+    "Month Short", FORMAT([Date], "MMM"),
+    "Quarter", "Q" & FORMAT([Date], "Q"),
+    "Week Number", WEEKNUM([Date]),
+    "Day of Week", FORMAT([Date], "dddd"),
+    "Day Short", FORMAT([Date], "ddd"),
+    "Is Weekend", IF(WEEKDAY([Date]) IN {1, 7}, TRUE, FALSE)
+)
+
+====================================================================================
+
+Patient Count = COUNT(healthcare_dataset_cleaned[Name])
+
+====================================================================================
+
+Age Group = 
+SWITCH(
+    TRUE(),
+    'healthcare_dataset_cleaned'[Age] < 10, "0-9",
+    'healthcare_dataset_cleaned'[Age] >= 10 && 'healthcare_dataset_cleaned'[Age] < 20, "10-19",
+    'healthcare_dataset_cleaned'[Age] >= 20 && 'healthcare_dataset_cleaned'[Age] < 30, "20-29",
+    'healthcare_dataset_cleaned'[Age] >= 30 && 'healthcare_dataset_cleaned'[Age] < 40, "30-39",
+    'healthcare_dataset_cleaned'[Age] >= 40 && 'healthcare_dataset_cleaned'[Age] < 50, "40-49",
+    'healthcare_dataset_cleaned'[Age] >= 50 && 'healthcare_dataset_cleaned'[Age] < 60, "50-59",
+    'healthcare_dataset_cleaned'[Age] >= 60 && 'healthcare_dataset_cleaned'[Age] < 70, "60-69",
+    'healthcare_dataset_cleaned'[Age] >= 70 && 'healthcare_dataset_cleaned'[Age] < 80, "70-79",
+    'healthcare_dataset_cleaned'[Age] >= 80 && 'healthcare_dataset_cleaned'[Age] < 90, "80-89",
+    'healthcare_dataset_cleaned'[Age] >= 90, "90+",
+    "Unknown"
+)
+
+====================================================================================
+
+Age Group Order = 
+SWITCH(
+    TRUE(),
+    'Table'[Age] < 10, 1,
+    'Table'[Age] >= 10 && 'Table'[Age] < 20, 2,
+    'Table'[Age] >= 20 && 'Table'[Age] < 30, 3,
+    'Table'[Age] >= 30 && 'Table'[Age] < 40, 4,
+    'Table'[Age] >= 40 && 'Table'[Age] < 50, 5,
+    'Table'[Age] >= 50 && 'Table'[Age] < 60, 6,
+    'Table'[Age] >= 60 && 'Table'[Age] < 70, 7,
+    'Table'[Age] >= 70 && 'Table'[Age] < 80, 8,
+    'Table'[Age] >= 80 && 'Table'[Age] < 90, 9,
+    'Table'[Age] >= 90, 10,
+    0
+)
+
+====================================================================================
+
+Readmission Flag = 
+IF('Table'[Readmission] = "Yes", 1, 0)
+
+====================================================================================
+
+Readmission Rate = 
+DIVIDE(
+    SUM('Table'[Readmission Flag]),
+    COUNT('Table'[Patient ID]),
+    0
+)
+
+====================================================================================
+
+Patients % Change with Arrows = 
+VAR ChangeValue = 
+    VAR CurrentMonthPatients = DISTINCTCOUNT('healthcare_dataset_cleaned'[Name])
+    VAR PreviousYearPatients = 
+        CALCULATE(
+            DISTINCTCOUNT('healthcare_dataset_cleaned'[Name]),
+            SAMEPERIODLASTYEAR('DateTable'[Date])
+        )
+    RETURN IF(
+        NOT ISBLANK(PreviousYearPatients),
+        DIVIDE(CurrentMonthPatients - PreviousYearPatients, PreviousYearPatients, 0) * 100,
+        0
+    )
+
+VAR Arrow = 
+    IF(ChangeValue > 0, "↑", IF(ChangeValue < 0, "↓", "→"))
+
+RETURN Arrow & " " & FORMAT(ChangeValue, "0.00") & "%"
+
+====================================================================================
+
+Patients Difference = 
+VAR CurrentYearPatients = DISTINCTCOUNT('healthcare_dataset_cleaned'[Name])
+VAR PreviousYearPatients = 
+    CALCULATE(
+        DISTINCTCOUNT('healthcare_dataset_cleaned'[Name]),
+        SAMEPERIODLASTYEAR('DateTable'[Date])
+    )
+RETURN 
+IF(NOT ISBLANK(PreviousYearPatients), 
+    CurrentYearPatients - PreviousYearPatients, 
+    0
+)
+
+
+====================================================================================
+
+Billing % Change with Arrows =
+VAR ChangeValue = 
+    VAR CurrentYearBilling = SUM('healthcare_dataset_cleaned'[Billing Amount])
+    VAR PreviousYearBilling = 
+        CALCULATE(
+            SUM('healthcare_dataset_cleaned'[Billing Amount]),
+            SAMEPERIODLASTYEAR('DateTable'[Date])
+        )
+    RETURN IF(
+        NOT ISBLANK(PreviousYearBilling),
+        DIVIDE(CurrentYearBilling - PreviousYearBilling, PreviousYearBilling, 0) * 100,
+        0
+    )
+
+VAR Arrow = 
+    IF(ChangeValue > 0, "↑", IF(ChangeValue < 0, "↓", "→"))
+
+RETURN Arrow & " " & FORMAT(ChangeValue, "0.00") & "%"
+
+====================================================================================
+
+Billing Difference = 
+VAR CurrentYearBilling = SUM(healthcare_dataset_cleaned[Billing Amount])
+VAR PreviousYearBilling = 
+    CALCULATE(
+        SUM(healthcare_dataset_cleaned[Billing Amount]),
+        SAMEPERIODLASTYEAR('DateTable'[Date])
+    )
+RETURN 
+IF(NOT ISBLANK(PreviousYearBilling), 
+    CurrentYearBilling - PreviousYearBilling, 
+    0
+)
+
+====================================================================================
+
+LOS % Change with Arrows = 
+VAR ChangeValue = 
+    VAR CurrentYearLength = AVERAGE(healthcare_dataset_cleaned[Length of Stay])
+    VAR PreviousYearLength = 
+        CALCULATE(
+            AVERAGE(healthcare_dataset_cleaned[Length of Stay]),
+            SAMEPERIODLASTYEAR('DateTable'[Date])
+        )
+    RETURN IF(
+        NOT ISBLANK(PreviousYearLength),
+        DIVIDE(CurrentYearLength - PreviousYearLength, PreviousYearLength, 0) * 100,
+        0
+    )
+
+VAR Arrow = 
+    IF(ChangeValue > 0, "↑", IF(ChangeValue < 0, "↓", "→"))
+
+RETURN Arrow & " " & FORMAT(ChangeValue, "0.00") & "%"
+
+====================================================================================
+
+LOS Difference = 
+VAR CurrentYearLength = AVERAGE(healthcare_dataset_cleaned[Length of Stay])
+VAR PreviousYearLength = 
+    CALCULATE(
+        AVERAGE(healthcare_dataset_cleaned[Length of Stay]),
+        SAMEPERIODLASTYEAR('DateTable'[Date])
+    )
+RETURN 
+IF(NOT ISBLANK(PreviousYearLength), 
+    CurrentYearLength - PreviousYearLength, 
+    0
+)
+
+====================================================================================
+
+Rate % Change with Arrows = 
+VAR ChangeValue = 
+    VAR CurrentYearRate = [Readmission Rate]
+    VAR PreviousYearRate = 
+        CALCULATE(
+            [Readmission Rate],
+            SAMEPERIODLASTYEAR('DateTable'[Date])
+        )
+    RETURN IF(
+        NOT ISBLANK(PreviousYearRate),
+        DIVIDE(CurrentYearRate - PreviousYearRate, PreviousYearRate, 0) * 100,
+        0
+    )
+
+VAR Arrow = 
+    IF(ChangeValue > 0, "↑", IF(ChangeValue < 0, "↓", "→"))
+
+RETURN Arrow & " " & FORMAT(ChangeValue, "0.00") & "%"
+
+====================================================================================
+
+Rate Difference = 
+VAR CurrentYearRate = [Readmission Rate]
+VAR PreviousYearRate = 
+    CALCULATE(
+        [Readmission Rate],
+        SAMEPERIODLASTYEAR('DateTable'[Date])
+    )
+RETURN 
+IF(NOT ISBLANK(PreviousYearRate), 
+    CurrentYearRate - PreviousYearRate, 
+    0
+)
+
+====================================================================================
