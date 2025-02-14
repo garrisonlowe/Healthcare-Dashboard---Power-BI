@@ -357,26 +357,26 @@ ADDCOLUMNS(
 
 2. Assign relationships in Data Model
 
-![image.png](Photos\Yearly Overview.png)
+![Image](https://github.com/user-attachments/assets/15e943d6-d66d-494e-897a-5c594a69ad57)
 
 ## **Photos of finished dashboard:**
 
 Yearly Overview page:
 
-![image.png](attachment:3078f5e1-c269-475f-b5b9-51e01912c2c2:image.png)
+![Image](https://github.com/user-attachments/assets/d9d397e0-982b-4409-8861-65baa6e0ba3c)
 
 Patient Demographics page:
 
-![image.png](attachment:07429740-6c06-47e9-894a-7871fd486707:image.png)
+![Image](https://github.com/user-attachments/assets/6e5b2506-825d-415c-9547-1d8cb4694956)
 
 Hospital Details page:
 
-![image.png](attachment:1fb2f18d-ca05-4b1d-8e88-75254245c4b3:image.png)
+![Image](https://github.com/user-attachments/assets/46228d1d-8446-4701-8f6f-06c422e7a3a5)
 
 Financial Details page:
 
-![image.png](attachment:555f2710-59d4-4e6e-aa08-17db3e4af2b1:image.png)
+![Image](https://github.com/user-attachments/assets/17da7dd7-d874-4433-a443-0d18d605fa7d)
 
 Patient Outcomes page:
 
-![image.png](attachment:71628ab4-fa99-4e9a-b30d-517a7fd72bd5:image.png)
+![Image](https://github.com/user-attachments/assets/40962529-378b-4c0a-9d3d-302c43169e01)
